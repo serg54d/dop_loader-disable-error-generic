@@ -4,15 +4,16 @@ import { addDeckAC, deleteDeckAC, setDecksAC, updateDeckAC } from './decks-reduc
 import { setAppStatusAC, setErrorAC } from '../../app/app-reducer.ts'
 import { AxiosError } from 'axios'
 
-export const fetchDecksTC = () => (dispatch: Dispatch) => {
-	dispatch(setAppStatusAC('loading'))
-  decksAPI.fetchDecks().then((res) => {
-    dispatch(setDecksAC(res.data.items))
-	dispatch(setAppStatusAC('succeeded'))
-  }).catch((err) => {
-	dispatch(setAppStatusAC('failed'))
-  })
-}
+export const fetchDecksTC = () => async (dispatch: Dispatch) => {
+  dispatch(setAppStatusAC('loading'));
+  try {
+    const res = await decksAPI.fetchDecks();
+    dispatch(setDecksAC(res.data.items));
+    dispatch(setAppStatusAC('succeeded'));
+  } catch (err) {
+    dispatch(setAppStatusAC('failed'));
+  }
+};
 
 export const addDeckTC = (name: string) => async (dispatch: Dispatch) => {
   return decksAPI.addDeck(name).then((res) => {
